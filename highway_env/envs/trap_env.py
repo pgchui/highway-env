@@ -47,6 +47,7 @@ class TrapEnv(AbstractEnv):
             "longi_aggr": True,
             "lateral_aggr": True,
             "init_state": None,
+            "speed_limit": 30.0, 
         })
         return config
 
@@ -83,7 +84,7 @@ class TrapEnv(AbstractEnv):
                 self.road,
                 position=lanes[subject_init_lane].position(subject_init_x, 0),
                 speed=subject_init_spd,
-                target_speed=subject_init_spd,
+                target_speed=self.config["speed_limit"],
                 longi_aggr=self.config["longi_aggr"],
                 lateral_aggr=self.config["lateral_aggr"],
             )
@@ -163,7 +164,7 @@ class TrapEnv(AbstractEnv):
                 self.road,
                 position=lanes[sv_init_state["lane"]].position(sv_init_state["x"], 0),
                 speed=sv_init_state["speed"],
-                target_speed=sv_init_state["target_speed"],
+                target_speed=self.config["speed_limit"],
                 longi_aggr=self.config["longi_aggr"],
                 lateral_aggr=self.config["lateral_aggr"],
             )
