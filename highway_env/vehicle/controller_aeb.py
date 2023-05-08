@@ -35,14 +35,20 @@ class AEBControlledVehicle(ControlledVehicle):
         #     if self.road.network.get_lane(target_lane_index).is_reachable_from(self.position):
         #         self.target_lane_index = target_lane_index
         
+        brake_factor = 1.0
+        prev_target_speed = self.target_speed
         if action is not None:
-            # self.target_speed = action * self.target_speed # AEBBrakeAction
-            self.target_speed = action # AEBAction
+            brake_factor = action
+            self.target_speed = action * self.target_speed # AEBBrakeAction
+            # self.target_speed = action # AEBAction
+            assert prev_target_speed >= self.target_speed
 
         action = {"steering": self.steering_control(self.target_lane_index),
                   "acceleration": self.speed_control(self.target_speed)}
         action['steering'] = np.clip(action['steering'], -self.MAX_STEERING_ANGLE, self.MAX_STEERING_ANGLE)
-        action['acceleration'] = np.clip(action['acceleration'], -self.MAX_ACCELERATION, self.MAX_ACCELERATION)
+        # action['acceleration'] = np.clip(action['acceleration'], -self.MAX_ACCELERATION, self.MAX_ACCELERATION)
+        action['acceleration'] = np.clip(action['acceleration'], -self.MAX_ACCELERATION, 0.0)
+        assert action["acceleration"] <= 0.0
         
         if action:
             self.action = action
